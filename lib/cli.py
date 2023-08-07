@@ -1,3 +1,5 @@
+import sqlite3
+import sqlalchemy
 import click 
 @click.command()
 @click.option("--name", prompt="Enter your name: ", help ="The name of the user")
