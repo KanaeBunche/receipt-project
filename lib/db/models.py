@@ -14,7 +14,13 @@ class Region(Base):
     
     id = Column(Integer())
     name = Column(String())
-    recipes = relationship('Region', backref=backref('region'))
+
+def __repr__(self):
+    return f"Id: {self.id}," \
+        + f"Name: {self.name}," \
+        + f"Recipies: {self.recipes}" 
+
+recipes = relationship('Region', backref=backref('region'))
 
 class Recipe(Base):
     __tablename__ = "recipes"
@@ -23,6 +29,13 @@ class Recipe(Base):
     id = Column(Integer())
     name = Column(String())
     description = Column(String())
+    
+    def __repr__(self):
+        return f"Id: {self.id},"\
+            + f"Name: {self.name},"\
+            + f"Description: {self.description},"\
+            + f"Ingredients: {self.ingredients}"
+    
     region_id = Column(Integer, ForeignKey('regions.id'))
     ingredients = relationship('Ingredient', secondary=association_table, backref = 'recipes')
     
@@ -32,6 +45,11 @@ class Ingredients(Base):
     
     id = Column(Integer())
     name = Column(String())
+
+    def __repr__(self):
+        return f"Id: {self.id},"\
+            + f"Name: {self.name},"
+    
     recipes = relationship('Recipe', secondary=association_table, backref='ingredients')
     user_list_id = Column(Integer, ForeignKey('userlist.id'))
     
@@ -41,6 +59,11 @@ class UserList(Base):
 
     id= Column(Integer, primary_key=True)
     username = Column(String())
+
+    def __repr__(self):
+        return f"Id: {self.id},"\
+            + f"Username: {self.username}"
+    
     region_id = Column(Integer, ForeignKey('regions.id'))
     region = relationship('Region')
     ingredients = relationship('Ingredients', backref = 'user_list')
