@@ -33,14 +33,17 @@ class Ingredients(Base):
     id = Column(Integer())
     name = Column(String())
     recipes = relationship('Recipe', secondary=association_table, backref='ingredients')
+    user_list_id = Column(Integer, ForeignKey('userlist.id'))
     
 
 class UserList(Base):
     __tablename__ = "userlist"
 
     id= Column(Integer, primary_key=True)
-    ingredients = Column(String)
+    username = Column(String())
     region_id = Column(Integer, ForeignKey('regions.id'))
+    region = relationship('Region')
+    ingredients = relationship('Ingredients', backref = 'user_list')
 
 
 
@@ -50,6 +53,7 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 Base.metadata.create_all(engine)
+
 
 # duplicate_regions = session.query(Region).filter_by(region='Italy').all()
 # for region in duplicate_regions:
@@ -69,7 +73,6 @@ Base.metadata.create_all(engine)
 # new_userlist = UserList(region = 'South Africa', ingredients='Tomatoes, pasta',region_id=new_region.id)
 # session.add(new_region)
 # session.commit()
-
 
 # region_query = session.query(Region).filter_by(region='Italy').first()
 # print(region_query)
