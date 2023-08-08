@@ -23,7 +23,7 @@ class Recipe(Base):
     id = Column(Integer())
     name = Column(String())
     description = Column(String())
-    region_id = Column(Integer, ForeignKey('regions.id'))
+    region = Column(Integer, ForeignKey('regions.id'))
     ingredients = relationship('Ingredient', secondary=association_table, backref = 'recipes')
     
 class Ingredients(Base):
