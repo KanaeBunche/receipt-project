@@ -40,6 +40,7 @@ class UserList(Base):
     __tablename__ = "userlist"
 
     id= Column(Integer, primary_key=True)
+    username = Column(String())
     region_id = Column(Integer, ForeignKey('regions.id'))
     region = relationship('Region')
     ingredients = relationship('Ingredients', backref = 'user_list')
