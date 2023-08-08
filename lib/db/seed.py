@@ -1,20 +1,18 @@
 
-from faker import Faker
-import random
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models import Base, Region, Recipe, Ingredients, UserList
 
 def seed_database():
-    
-
     regions_data = [
-        {"name": "Italy", "recipes": "Spaghetti, Meatballs"}
+        {"name": "Italy"},
+        {"name": "Paris"},
+        {"name": "United States of America"}
         
     ]
 
     for region_data in regions_data:
-        region = Region(region_data)
+        region = Region(name=region_data['name'])
         session.add(region)
         session.commit()
 
@@ -24,20 +22,17 @@ def seed_database():
         {"name": "United States of America", "description": "You Put the ground eef in the hot pan", "ingredients": "GroundBeef, Bread"}
         # Add more recipes
     ]
+        
+
 
     for recipe_data in recipes_data:
         recipe = Recipe(recipe_data)
         session.add(recipe)
         session.commit()
     
-    # engine = create_engine('sqlite:///sql_food.db')
-    # Session = sessionmaker(bind=engine)
-    # session = Session()
-
-    # Add more sample data for recipes and user lists
+    
 if __name__ == '__main__':
     engine = create_engine('sqlite:///sql_food.db')
     Session = sessionmaker(bind=engine)
     session = Session
-# if __name__ == "__main__":
-#     seed_database()
+
