@@ -23,7 +23,7 @@ class Recipe(Base):
     id = Column(Integer())
     name = Column(String())
     description = Column(String())
-    region_id = Column(Integer, ForeignKey('regions.id'))
+    region = Column(Integer, ForeignKey('regions.id'))
     ingredients = relationship('Ingredient', secondary=association_table, backref = 'recipes')
     
 class Ingredients(Base):
@@ -36,14 +36,7 @@ class Ingredients(Base):
     user_list_id = Column(Integer, ForeignKey('userlist.id'))
     
 
-class UserList(Base):
-    __tablename__ = "userlist"
 
-    id= Column(Integer, primary_key=True)
-    username = Column(String())
-    region_id = Column(Integer, ForeignKey('regions.id'))
-    region = relationship('Region')
-    ingredients = relationship('Ingredients', backref = 'user_list')
 
 
 
