@@ -27,6 +27,14 @@ class Ingredient(Base):
     __table_args__ = (PrimaryKeyConstraint('id'),)
     id = Column(Integer())
     name = Column(String())
+<<<<<<< HEAD
+=======
+    recipes = relationship('Recipe', secondary=association_table, backref='ingredients')
+    user_list_id = Column(Integer, ForeignKey('userlist.id'))
+    
+
+
+>>>>>>> main
 
 class FoodAssociation(Base):
     __tablename__ = "recipes_association"
