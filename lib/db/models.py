@@ -4,17 +4,13 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
-association_table = Table('association', Base.metadata,
-                    Column('ingredient_id', Integer, ForeignKey('ingredients.id')),
-                    Column('recipe_id', Integer, ForeignKey('recipes.id')))
-
 class Region(Base):
     __tablename__ = "regions"
     __table_args__ = (PrimaryKeyConstraint('id'),)
-    
+
     id = Column(Integer())
     name = Column(String())
-    recipes = relationship('Region', backref=backref('region'))
+    recipe_association = relationship('Recipe', back_populates='region_association')
 
 class Recipe(Base):
     __tablename__ = "recipes"
@@ -23,28 +19,23 @@ class Recipe(Base):
     id = Column(Integer())
     name = Column(String())
     description = Column(String())
-    region = Column(Integer, ForeignKey('regions.id'))
-    ingredients = relationship('Ingredient', secondary=association_table, backref = 'recipes')
-    
-class Ingredients(Base):
+    region_id = Column(Integer, ForeignKey('regions.id'))
+    region_association = relationship('Region', back_populates='recipe_association')
+
+class Ingredient(Base):
     __tablename__ = "ingredients"
     __table_args__ = (PrimaryKeyConstraint('id'),)
-    
     id = Column(Integer())
     name = Column(String())
-    recipes = relationship('Recipe', secondary=association_table, backref='ingredients')
-    user_list_id = Column(Integer, ForeignKey('userlist.id'))
-    
 
-class UserList(Base):
-    __tablename__ = "userlist"
-
-    id= Column(Integer, primary_key=True)
-    username = Column(String())
-    region_id = Column(Integer, ForeignKey('regions.id'))
-    region = relationship('Region')
-    ingredients = relationship('Ingredients', backref = 'user_list')
-
+class FoodAssociation(Base):
+    __tablename__ = "recipes_association"
+    __table_args__ = (PrimaryKeyConstraint('id'),)
+    id = Column(Integer())
+    ingredient_id = Column(Integer, ForeignKey('ingredients.id'))
+    recipe_id = Column(Integer, ForeignKey('recipes.id'))
+    ingredient = relationship("Ingredient", backref=backref('ingredients'))
+    recipe = relationship("Recipe", backref=backref('recipes'))
 
 
 db_url = 'sqlite:///sql_food.db'
@@ -53,7 +44,6 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 Base.metadata.create_all(engine)
-
 
 # duplicate_regions = session.query(Region).filter_by(region='Italy').all()
 # for region in duplicate_regions:
