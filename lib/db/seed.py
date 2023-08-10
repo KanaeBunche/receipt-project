@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import sys
 sys.path.append('/lib/db/models')
-from models import Base, Recipe, Ingredient,FoodAssociation
+from db.models import Base, Recipe, Ingredient,FoodAssociation
 
 def seed_database():
 
