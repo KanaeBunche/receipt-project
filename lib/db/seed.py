@@ -1,13 +1,9 @@
-<<<<<<< HEAD
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from models import Base, Region, Recipe, Ingredient, FoodAssociation
-=======
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base, Region, Recipe, Ingredients
->>>>>>> main
+import sys
+sys.path.append('/lib/db/models')
+from models import Base, Recipe, Ingredient,FoodAssociation
 
 def seed_database():
 
@@ -1012,12 +1008,7 @@ if __name__ == '__main__':
     engine = create_engine('sqlite:///lib/db/sql_food.db')
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
-<<<<<<< HEAD
-    session = Session()
-    seed_database()
-=======
     session = Session
 
     Base.metadata.create_all(engine)
 
->>>>>>> main

@@ -1,7 +1,9 @@
 from db.seed import Session
-from db.models import Region, Recipe, Ingredients
+from db.models import Region, Recipe, Ingredient
 import click
 
+
+session=Session()
 
 @click.group()   
 def cli():
@@ -26,7 +28,7 @@ def add_region(region_name):
 @cli.command()
 @click.option("--title", prompt="Enter recipe title: ", help="The title of the recipe")
 @click.option("--ingredients", prompt="Enter ingredients: ", help="List of ingredients")
-def add_recipe(title, ingredients):
+def add_recipe(title, ingredients,region_id):
     session = Session()
 
 
@@ -41,7 +43,7 @@ def add_recipe(title, ingredients):
 def add_ingredient(name):
     session = Session()
 
-    new_ingredient = Ingredients(name=name)
+    new_ingredient = Ingredient(name=name)
     session.add(new_ingredient)
     session.commit()
 
