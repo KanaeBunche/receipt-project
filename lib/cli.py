@@ -128,7 +128,7 @@ def confirm_recipe():
         click.echo("Invalid command prompt")
         confirm_recipe()
 
-click.command()
+@click.command()
 def save_recipe():
     save_region = None
     save_recipe = None
@@ -188,13 +188,10 @@ def save_recipe():
         cli()
     else:
         pass
+
 @click.command()
 def grab_recipe():
     click.echo(regions)
-
-@click.command()
-def grab_recipe_by_region():
-    click.echo(ingredients)
 
 @click.command()
 def grab_recipe_by_region():
