@@ -197,6 +197,37 @@ def grab_recipe_by_region():
     click.echo(ingredients)
 
 @click.command()
+def grab_recipe_by_region():
+    session = Session()
+
+    while True:
+        region_name = click.prompt("Enter the region name (or type back to main menu)")
+        
+        if region_name.lower() == 'main menu':
+            click.echo("Going back to the main menu.")
+            cli()  
+            break
+        
+        region = session.query(Region).filter_by(name=region_name).first()
+
+        if region:
+            recipes = region.recipe_association
+            if recipes:
+                click.echo("")
+                click.echo("")
+                click.echo("_______________________________________")
+                click.echo(f"Recipes in region '{region_name}':")
+                click.echo("")
+                for recipe in recipes:
+                    click.echo(f"- {recipe.name}")
+                    click.echo(f"- {recipe.description}")
+                    click.echo("")
+            else:
+                click.echo(f"No recipes found in region '{region_name}'.")
+        else:
+            click.echo(f"Region '{region_name}' not found.")
+
+@click.command()
 def grab_recipe_by_ingredients():
     click.echo("")
     click.echo("")
@@ -236,7 +267,7 @@ def grab_recipe_by_ingredients():
         click.echo(f'Region: {recipe_region.name}')
         click.echo("")
     click.echo("Cool, that's a good few recipes. So? Whaddaya wanna do? Check new ingredients out or go back to the start?")
-    confirm = click.prompt("Reset or Exit ")
+    confirm = click.prompt("Reset or go back to the main menu ")
     if confirm == "reset":
         click.echo("")
         click.echo("")
@@ -244,6 +275,8 @@ def grab_recipe_by_ingredients():
         grab_recipe_by_ingredients()
     else:
         cli()
+
+
 if __name__ == "__main__":
     engine = create_engine('sqlite:///lib/db/sql_food.db')
     Base.metadata.create_all(engine)

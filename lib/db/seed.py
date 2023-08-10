@@ -1,6 +1,9 @@
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base, Region, Recipe, Ingredient, FoodAssociation
+import sys
+sys.path.append('/lib/db/models')
+from db.models import Base, Recipe, Ingredient,FoodAssociation
 
 def seed_database():
 
