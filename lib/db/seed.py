@@ -1,13 +1,6 @@
-<<<<<<< HEAD
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models import Base, Region, Recipe, Ingredient, FoodAssociation
-=======
-
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from models import Base, Region, Recipe, Ingredients
->>>>>>> main
 
 def seed_database():
 
@@ -998,26 +991,28 @@ def seed_database():
     "region": "Australia"}
     ]
 
-    for recipe in recipes:
-        for ingredient in ingredients:
-            ingredient_name = ingredient.name
-            for word in ingredient_name.split():
-                if word.lower() in recipe.description.lower():
-                    food_association = FoodAssociation(ingredient=ingredient, recipe=recipe)
-                    session.add(food_association)
+
+    for ingredient in ingredients:
+        for recipe in recipes:
+            if ingredient.name.lower() in recipe.description.lower():
+                food_association = FoodAssociation(ingredient_id=ingredient.id, recipe_id=recipe.id)
+                session.add(food_association)
     session.commit()
+
+
+    # for recipe in recipes:
+    #     for ingredient in ingredients:
+    #         ingredient_name = ingredient.name
+    #         for word in ingredient_name.split():
+    #             if word.lower() in recipe.description.lower():
+    #                 food_association = FoodAssociation(ingredient=ingredient, recipe=recipe)
+    #                 session.add(food_association)
+    # session.commit()
 
 
 if __name__ == '__main__':
     engine = create_engine('sqlite:///lib/db/sql_food.db')
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
-<<<<<<< HEAD
     session = Session()
     seed_database()
-=======
-    session = Session
-
-    Base.metadata.create_all(engine)
-
->>>>>>> main

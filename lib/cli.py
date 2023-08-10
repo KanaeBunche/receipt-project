@@ -12,7 +12,7 @@ new_recipe = {
 @click.command()   
 def cli():
 
-    click.echo("Welcome! To start you off, first select what it is you would like to do here:")
+    click.echo("To start you off, first select what it is you would like to do here:")
     click.echo("1. Add a new Recipe")
     click.echo("2. Grab an existing Recipe.")
     click.echo("3. Grab a list of available Recipes in the database based on region.")
@@ -35,7 +35,7 @@ def cli():
 def add_recipe_start():
     click.echo("_______________________________________")
     click.echo("Enter the name of your new Recipe")
-    new_name = click.prompt("Name: ")
+    new_name = click.prompt("Name ")
     click.echo("")
     click.echo(f"Wow sounds interesting, want to go with this name?")
     confirm = click.prompt("Yes or No ")
@@ -53,7 +53,7 @@ def add_recipe_region():
     click.echo("")
     click.echo("_______________________________________")
     click.echo("Enter the name of the Region your food is from, ex: Italy, Morocco, Korea, etc.")
-    new_region = click.prompt("Region: ")
+    new_region = click.prompt("Region ")
     click.echo(f"Are you sure this is the region you want?")
     confirm = click.prompt("Yes or No ")
     if confirm == "yes":
@@ -71,7 +71,7 @@ def add_recipe_ingredients():
     click.echo("")
     click.echo("_______________________________________")
     click.echo("Alright! Now lets add some ingredients to this bad boy!")
-    new_ingredients = click.prompt("Add Ingredients:")
+    new_ingredients = click.prompt("Add Ingredients ")
     click.echo(f"Are you good with these ingredients?")
     confirm = click.prompt("Yes or No ")
     if confirm == 'yes':
@@ -89,7 +89,7 @@ def add_recipe_description():
     click.echo("")
     click.echo("_______________________________________")
     click.echo("Very nice! Now that you've got that taken care of, why not add a short description? Include the ingredients if you want!")
-    new_description= click.prompt("Describe the Recipe:")
+    new_description= click.prompt("Describe the Recipe ")
     click.echo(f" Are you good with this description?")
     confirm = click.prompt("Yes or No ")
     if confirm == 'yes':
@@ -138,11 +138,9 @@ def save_recipe():
     for region in regions:
         if new_recipe['region'].lower() == region.name.lower():
             save_region = region
-            click.echo(f'Region Exists: {save_region}')
             break
     else:
         save_region = Region(name = new_recipe['region'])
-        click.echo(f'Region does not Exist: {save_region}')
         session.add(save_region)
         session.commit()
             
@@ -152,26 +150,11 @@ def save_recipe():
         existing_ingredient = next((ingredient for ingredient in ingredients if ingredient.name.lower() == new_ingredient.lower()), None)
         if existing_ingredient:
             save_ingredients.append(existing_ingredient)
-            click.echo(f'Ingredient already exists: {existing_ingredient}')
         else:
-            click.echo(f'Ingredient did not exist: {new_ingredient}')
             create_ingredient = Ingredient(name = new_ingredient)
             session.add(create_ingredient)
             session.commit()
-            click.echo(f'New Ingredient Created with ID: {create_ingredient.id}')
             save_ingredients.append(create_ingredient)
-    # for ingredient in ingredients:
-    #     for new_ingredient in ingredient_list:
-    #         if new_ingredient.lower() == ingredient.name.lower():
-    #             save_ingredients.append(ingredient)
-    #             click.echo(f'Ingredient already exists: {ingredient}')
-    #             break
-    #     else:
-    #         click.echo(f'Ingredient does not exist: {new_ingredient}')
-    #         create_ingredient = Ingredient(name = new_ingredient)
-    #         session.add(create_ingredient)
-    #         session.commit()
-    #         save_ingredients.append(create_ingredient)
     for recipe in recipes:
         if new_recipe['name']  == recipe.name:
             click.echo(f'Recipe already Exists, sorry :(')
@@ -185,7 +168,6 @@ def save_recipe():
         save_recipe = Recipe(name = recipe_data['name'], description = recipe_data['description'], region_id = recipe_data['region_id'])
         session.add(save_recipe)
         session.commit()
-        click.echo(f'Created new Recipe: {save_recipe}, name: {save_recipe.name}, description: {save_recipe.description}, region_id: {save_recipe.region_id}')
     for ingredient in save_ingredients:
         food_association = FoodAssociation(ingredient_id  = ingredient.id, recipe_id = save_recipe.id)
         session.add(food_association)
@@ -196,7 +178,16 @@ def save_recipe():
                 session.add(food_association2)
                 save_foodassociations.append(food_association2)
     session.commit()
-
+    click.echo("")
+    click.echo("Congratulations! You've successfully added a Recipe to our database. I'll go ahead a bring you back up to the start of the program, unless you'd like to exit?")
+    confirm = click.prompt("Reset or Exit ")
+    if confirm == "reset":
+        click.echo("")
+        click.echo("")
+        click.echo("_______________________________________")
+        cli()
+    else:
+        pass
 @click.command()
 def grab_recipe():
     click.echo(regions)
@@ -207,8 +198,52 @@ def grab_recipe_by_region():
 
 @click.command()
 def grab_recipe_by_ingredients():
-    click.echo(foodassociations)
-
+    click.echo("")
+    click.echo("")
+    click.echo("_______________________________________")
+    click.echo("Go ahead and give me a list of ingredients you would like to search for. If an ingredient you list does not exist in our database, don't worry--we'll just ignore it!")
+    prompt = click.prompt("Ingredients ")
+    ingredient_prompt_list = [ingredient.strip() for ingredient in prompt.split(',')]
+    ingredient_exists_list = []
+    recipe_id_list = []
+    recipe_list = []
+    
+    for ingredient_prompt in ingredient_prompt_list:
+        existing_ingredient = next((ingredient for ingredient in ingredients if ingredient.name.lower() == ingredient_prompt.lower()), None)
+        if existing_ingredient:
+            ingredient_exists_list.append(existing_ingredient)
+            
+    for ingredient in ingredient_exists_list:
+        ingredient_relationship = next((relationship for relationship in foodassociations if ingredient.id == relationship.ingredient_id), None)
+        if ingredient_relationship:
+            recipe_id_list.append(ingredient_relationship)
+    
+    for recipe_id in recipe_id_list:
+        recipe_relationship = next((recipe for recipe in recipes if recipe.id == recipe_id.recipe_id), None)
+        if recipe_relationship:
+            if recipe_relationship not in recipe_list:
+                recipe_list.append(recipe_relationship)
+            
+    for recipe in recipe_list:
+        click.echo("")
+        click.echo("_______________________________________")
+        click.echo("")
+        click.echo(f'Recipe: {recipe.name}')
+        click.echo("")
+        click.echo(f'Description: {recipe.description}')
+        click.echo("")
+        recipe_region = next((region for region in regions if region.id == recipe.region_id), None)
+        click.echo(f'Region: {recipe_region.name}')
+        click.echo("")
+    click.echo("Cool, that's a good few recipes. So? Whaddaya wanna do? Check new ingredients out or go back to the start?")
+    confirm = click.prompt("Reset or Exit ")
+    if confirm == "reset":
+        click.echo("")
+        click.echo("")
+        click.echo("_______________________________________")
+        grab_recipe_by_ingredients()
+    else:
+        cli()
 if __name__ == "__main__":
     engine = create_engine('sqlite:///lib/db/sql_food.db')
     Base.metadata.create_all(engine)
@@ -218,42 +253,6 @@ if __name__ == "__main__":
     regions = session.query(Region).all()
     ingredients = session.query(Ingredient).all()
     foodassociations = session.query(FoodAssociation).all()
+    print("Hello and welcome to our little project on generating Recipes!")
     cli()
-    # @click.command()
-    # @click.option("--name", prompt="Enter your name: ", help ="The name of the user")
-    # def hello(name):
-    #     click.echo(f"Hello {name}!")
-
-    # @cli.command()
-    # @click.option("--region-name", prompt="Enter region name: ", help="The name of the region")
-    # def add_region(region_name):
-    #     session = Session()
-
-    #     new_region_name = region_name
-
-    #     click.echo(f"Added region: {region_name}")
-    #     click.pause()
-    # @cli.command()
-    # @click.option("--title", prompt="Enter recipe title: ", help="The title of the recipe")
-    # @click.option("--ingredients", prompt="Enter ingredients: ", help="List of ingredients")
-    # def add_recipe(title, ingredients, region_id):
-    #     session = Session()
-
-        
-    #     new_recipe_title=title
-    #     new_recipe_ingredients=ingredients
-    #     new_recipe_region=region_id
-
-    #     click.echo(f"Added recipe: {title}")
-    #     click.pause()
-        
-    # @cli.command()
-    # @click.option("--name", prompt="Enter ingredient name: ", help="The name of the ingredient")
-    # def add_ingredient(name):
-    #     session = Session()
-
-    #     new_ingredient = name
-
-    #     click.echo(f"Added ingredient: {name}")
-    #     click.pause()
-        
+    
