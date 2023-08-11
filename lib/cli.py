@@ -192,27 +192,36 @@ def save_recipe():
 
 @click.command()
 def grab_recipe():
+    session = Session()
     while True:
+            
         recipe_name = click.prompt("Enter the recipe name (or type back to main menu)")
         
         if recipe_name.lower() == 'main menu':
             click.echo("Going back to the main menu.")
             cli()  
             break
-        recipe_found = None
-        for recipe in recipes:
-            if recipe.name == recipe_name:
-                recipe_found = recipe
 
-        if recipe_found:
+       
+        found_recipe = None
+        for recipe in recipes:
+            if recipe.name.lower() == recipe_name.lower():
+                found_recipe = recipe
+
+        if found_recipe:
             click.echo("")
             click.echo("")
             click.echo("_______________________________________")
-            click.echo(f"- {recipe.name}")
-            click.echo(f"- {recipe.description}")
+            click.echo(f"- {found_recipe.name}")
+            click.echo(f"- {found_recipe.description}")
             click.echo("")
         else:
             click.echo(f"No recipe found for the name: '{recipe_name}'.")
+        
+
+            
+      
+
 
 @click.command()
 def grab_recipe_by_region():
