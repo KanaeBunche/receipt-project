@@ -48,6 +48,7 @@ def add_recipe_start():
         click.echo("")
         click.echo("Invalid command prompt")
         add_recipe_start()
+
 @click.command()
 def add_recipe_region():
     click.echo("")
@@ -191,11 +192,30 @@ def save_recipe():
 
 @click.command()
 def grab_recipe():
-    click.echo(regions)
+    while True:
+        recipe_name = click.prompt("Enter the recipe name (or type back to main menu)")
+        
+        if recipe_name.lower() == 'main menu':
+            click.echo("Going back to the main menu.")
+            cli()  
+            break
+        recipe_found = None
+        for recipe in recipes:
+            if recipe.name == recipe_name:
+                recipe_found = recipe
+
+        if recipe_found:
+            click.echo("")
+            click.echo("")
+            click.echo("_______________________________________")
+            click.echo(f"- {recipe.name}")
+            click.echo(f"- {recipe.description}")
+            click.echo("")
+        else:
+            click.echo(f"No recipe found for the name: '{recipe_name}'.")
 
 @click.command()
 def grab_recipe_by_region():
-    session = Session()
 
     while True:
         region_name = click.prompt("Enter the region name (or type back to main menu)")
@@ -285,4 +305,4 @@ if __name__ == "__main__":
     foodassociations = session.query(FoodAssociation).all()
     print("Hello and welcome to our little project on generating Recipes!")
     cli()
-    
+

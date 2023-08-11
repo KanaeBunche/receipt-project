@@ -995,12 +995,12 @@ def seed_database():
     ]
 
 
-    for ingredient in ingredients:
-        for recipe in recipes:
-            if ingredient.name.lower() in recipe.description.lower():
-                food_association = FoodAssociation(ingredient_id=ingredient.id, recipe_id=recipe.id)
-                session.add(food_association)
-    session.commit()
+    # for ingredient in ingredients:
+    #     for recipe in recipes:
+    #         if ingredient.name.lower() in recipe.description.lower():
+    #             food_association = FoodAssociation(ingredient_id=ingredient.id, recipe_id=recipe.id)
+    #             session.add(food_association)
+    # session.commit()
 
 
     # for recipe in recipes:
